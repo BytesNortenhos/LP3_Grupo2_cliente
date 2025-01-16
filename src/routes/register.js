@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { registar } = require('../functions/opo.js');
+const { enviarEmail } = require('../functions/resend.js');
 
 router.get('/', (req, res) => {
     let stateLogin = req.session.stateLogin;
@@ -23,6 +24,8 @@ router.post('/', async (req, res) => {
 
     switch(result.stateLogin) {
         case 99:
+            let emailResult = await enviarEmail(username, email, password);
+            if(emailResult.status === 0) { console.log("> Erro ao enviar Email: " + emailResult.message); }
             req.session.stateLogin = 1;
             res.redirect('/login');
             break;

@@ -30,7 +30,7 @@ router.post('/', (req, res, next) => {
         req.logIn(user, function(err) {
             if (err) return next(err);
             req.session.logged = true;
-            req.session.user = user.email;
+
             return res.redirect('/');
         });
     })(req, res, next);
@@ -49,11 +49,11 @@ passport.use('local', new LocalStrategy({
     switch(result.stateLogin) {
         case 99:
             return done(null, {
-                id: result.data.Client[0].id,
-                groupId: result.data.Client[0].groupId,
-                name: result.data.Client[0].name,
-                email: result.data.Client[0].email,
-                active: result.data.Client[0].active,
+                id: result.data.Client[0].Id,
+                groupId: result.data.Client[0].GroupId,
+                name: result.data.Client[0].Name,
+                email: result.data.Client[0].Email,
+                active: result.data.Client[0].Active,
             }, {});
             break;
         case 2:
