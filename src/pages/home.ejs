@@ -3,9 +3,38 @@
 
     <body class="font-default">
         <div class="blocker max-w-screen-sm m-auto">
+            <% if (alert === true) { %>
+                <div class="alertZone m-auto mt-4">
+                    <%- include('alert', {type: type, message: message}); %>
+                </div>
+            <% } %>
             <div id="content" class="content m-4">
                 Hello World!
+
+                <div id="editPassword" class="flex-auto text-right text-sm font-light text-primary underline underline-offset-4">
+                    <span onclick="mdlChangePassword.showModal()" class="cursor-pointer text-base">Alterar</span>
+                </div>
             </div>
         </div>
     </body>
+
+    <dialog id="mdlChangePassword" class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box">
+            <h2 class="text-2xl font-bold">Alterar Password</h3>
+            <div class="py-2 text-base">
+                <p>Para alterar a sua palavra-passe, digite a nova no campo abaixo:</p>
+            </div>
+            <div class="modal-action w-full text-center">
+                <form action="/alterar-password" method="post">
+                    <div class="join w-full">
+                        <input class="input input-bordered join-item max-[350px]:w-[50%] w-full !rounded-s-lg" type="password" name="inpValue" placeholder="Nova palavra-passe" required />
+                        <button class="btn join-item btn-success btn-outline text-base border-2 font-bold" type="submit">Alterar</button>
+                    </div>
+                </form>
+                <form method="dialog">
+                    <button class="btn text-base">Fechar</button>
+                </form>
+            </div>
+        </div>
+    </dialog>
 </html>
