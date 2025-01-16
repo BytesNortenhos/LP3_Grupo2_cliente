@@ -56,14 +56,12 @@ async function registar(username, email, password) {
             password: process.env.OPO_API_PASSWORD
         }
     }).then((response) => {
-        console.log(response);
         switch(response.status) {
             case 201:
                 return { stateLogin: 99, data: response.data, errorMsg: null };
                 break;
         }
     }).catch((error) => {
-        console.log(error);
         switch(error.status) {
             case 406:
                 if(error.response.data === 'InvalidParameters') return { stateLogin: 2, data: null, errorMsg: 'Nome/Email/Password errados!' };
