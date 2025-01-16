@@ -14,6 +14,7 @@ router.get('/', (req, res) => {
     //-> req.session.passport.user.active
 
     if(stateLogin === 1) return res.render('home.ejs', { alert: true, type: 'success', message: 'Palavra-passe alterada!' });
+    if(stateLogin === 10) return res.redirect('/logout');
     if(stateLogin === 2) return res.render('home.ejs', { alert: true, type: 'error', message: errorMsg });
     if(stateLogin === 3) return res.render('home.ejs', { alert: true, type: 'error', message: errorMsg });
     if(stateLogin === 4) return res.render('home.ejs', { alert: true, type: 'error', message: errorMsg });

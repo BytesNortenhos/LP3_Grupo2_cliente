@@ -14,9 +14,18 @@
                 <div id="editPassword" class="flex-auto text-right text-sm font-light text-primary underline underline-offset-4">
                     <span onclick="mdlChangePassword.showModal()" class="cursor-pointer text-base">Alterar</span>
                 </div>
+                <div class="flex-auto text-right text-sm font-light text-primary underline underline-offset-4">
+                    <a id="deleteAccount" href="/eliminar-conta" class="cursor-pointer text-base">Eliminar</span>
+                </div>
             </div>
         </div>
     </body>
+
+
+    <script>
+        let textDeleteAccount = document.getElementById('deleteAccount');
+        textDeleteAccount.addEventListener('click', () => { if (!confirm("Tem certeza que deseja eliminar a conta? Esta ação não pode ser desfeita.")) { event.preventDefault(); } });
+    </script>
 
     <dialog id="mdlChangePassword" class="modal modal-bottom sm:modal-middle">
         <div class="modal-box">
