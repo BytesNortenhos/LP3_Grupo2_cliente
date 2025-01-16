@@ -35,8 +35,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //-> Rotas:
-app.use('/login', checkNotLogged, require('./routes/login.js'));~
+app.use('/login', checkNotLogged, require('./routes/login.js'));
 app.use('/registar', checkNotLogged, require('./routes/register.js'));
+app.use('/alterar-password', checkLogged, require('./routes/alterar-password.js'));
 app.use('/', checkLogged, require('./routes/root.js'));
 
 app.use(function (req, res, next) {
