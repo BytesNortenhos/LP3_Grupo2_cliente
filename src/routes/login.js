@@ -1,0 +1,80 @@
+const router = require('express').Router();
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const { login } = require('../functions/opo.js');
+
+router.get('/', (req, res) => {
+    let stateLogin = req.session.stateLogin;
+    let errorMsg = req.session.errorMsg;
+    delete req.session.stateLogin;
+    delete req.session.errorMsg;
+
+    if(stateLogin === 1) return res.render('login.ejs', {alert: true, type: 'success', message: 'Conta criada com sucesso, por favor faça login!'});
+    if(stateLogin === 2) return res.render('login.ejs', {alert: true, type: 'error', message: errorMsg});
+    if(stateLogin === 3) return res.render('login.ejs', {alert: true, type: 'error', message: errorMsg});
+    if(stateLogin === 4) return res.render('login.ejs', {alert: true, type: 'error', message: errorMsg});
+
+    res.render('login.ejs', { alert: false });
+});
+
+router.post('/', (req, res, next) => {
+    passport.authenticate('local', function(err, user, info) {
+        if (err) return next(err);
+        
+        if (!user) {
+            req.session.stateLogin = info.stateLogin;
+            req.session.errorMsg = info.errorMsg;
+            return res.redirect('/login');
+        }
+
+        req.logIn(user, function(err) {
+            if (err) return next(err);
+            req.session.logged = true;
+            req.session.user = user.email;
+            return res.redirect('/');
+        });
+    })(req, res, next);
+});
+
+/* PassportJS Local */
+passport.use('local', new LocalStrategy({
+    passReqToCallback: true, 
+    usernameField: 'email',
+    passwordField: 'password'
+}, async function(req, username, password, done) {
+    let email = username.toLowerCase();
+
+    let result = await login(email, password);
+
+    switch(result.stateLogin) {
+        case 99:
+            return done(null, {
+                id: result.data.Client[0].id,
+                groupId: result.data.Client[0].groupId,
+                name: result.data.Client[0].name,
+                email: result.data.Client[0].email,
+                active: result.data.Client[0].active,
+            }, {});
+            break;
+        case 2:
+            return done(null, false, { stateLogin: result.stateLogin, errorMsg: result.errorMsg });
+            break;
+        case 3:
+            return done(null, false, { stateLogin: result.stateLogin, errorMsg: result.errorMsg });
+            break;
+        case 4:
+            return done(null, false, { stateLogin: result.stateLogin, errorMsg: result.errorMsg });
+            break;
+    }
+}));
+
+/* PassportJS */
+passport.serializeUser(function(user, cb) {
+    cb(null, user);
+});
+
+passport.deserializeUser(function(obj, cb) {
+    cb(null, obj);
+});
+
+module.exports = router;
