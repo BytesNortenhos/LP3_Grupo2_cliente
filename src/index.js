@@ -39,6 +39,7 @@ app.use('/login', checkNotLogged, require('./routes/login.js'));
 app.use('/registar', checkNotLogged, require('./routes/register.js'));
 app.use('/alterar-password', checkLogged, require('./routes/alterar-password.js'));
 app.use('/eliminar-conta', checkLogged, require('./routes/eliminar-conta.js'));
+app.use('/comprar-bilhete', checkLogged, require('./routes/comprar-bilhete.js'));
 app.use('/logout', checkLogged, require('./routes/logout.js'));
 app.use('/', checkLogged, require('./routes/root.js'));
 
