@@ -214,6 +214,7 @@ async function obterGames() {
 
 async function comprarBilhete(idGame, idClient) {
     let numTickets = await obterNumTickets(idGame);
+    console.log(numTickets);
     if(numTickets === -1) return { stateRequest: 99, data: null, errorMsg: 'Erro ao gerar o lugar!' };
 
     return await axios({
@@ -266,7 +267,7 @@ async function obterNumTickets(idGame) {
         }
     }).then((response) => {
         switch(response.status) {
-            case 201:
+            case 200:
                 return response.data.TicketInfo.length;
                 break;
         }

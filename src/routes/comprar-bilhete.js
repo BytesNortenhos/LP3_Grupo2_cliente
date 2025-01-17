@@ -4,7 +4,7 @@ const { comprarBilhete } = require('../functions/opo.js');
 router.get('/:idGame', async (req, res) => {
     let idGame = req.params.idGame;
 
-    let result = await comprarBilhete(idGame, req.session.passport.user.id, 1);
+    let result = await comprarBilhete(idGame, req.session.passport.user.id);
     switch(result.stateRequest) {
         case 1:
             req.session.stateLogin = 0;
