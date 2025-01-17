@@ -8,10 +8,7 @@ router.get('/', (req, res) => {
     delete req.session.stateLogin;
     delete req.session.errorMsg;
 
-    if(stateLogin === 2) return res.render('login.ejs', {alert: true, type: 'error', message: errorMsg});
-    if(stateLogin === 3) return res.render('login.ejs', {alert: true, type: 'error', message: errorMsg});
-    if(stateLogin === 4) return res.render('login.ejs', {alert: true, type: 'error', message: errorMsg});
-
+    if(stateLogin === 99) return res.render('register.ejs', {alert: true, type: 'error', message: errorMsg});
     res.render('register.ejs', { alert: false });
 });
 
@@ -23,24 +20,15 @@ router.post('/', async (req, res) => {
     let result = await registar(username, email, password);
 
     switch(result.stateLogin) {
-        case 99:
+        case 1:
             let emailResult = await enviarEmail(username, email, password);
             if(emailResult.status === 0) { console.log("> Erro ao enviar Email: " + emailResult.message); }
             req.session.stateLogin = 1;
             res.redirect('/login');
             break;
-        case 2:
-            req.session.stateLogin = 2;
-            req.session.errorMsg = result.errorMsg;
-            res.redirect('/registar');
-            break;
-        case 3:
-            req.session.stateLogin = 3;
-            req.session.errorMsg = result.errorMsg;
-            res.redirect('/registar');
-            break;
-        case 4:
-            req.session.stateLogin = 4;
+        case 99:
+            console.log("aaaa")
+            req.session.stateLogin = 99;
             req.session.errorMsg = result.errorMsg;
             res.redirect('/registar');
             break;

@@ -19,7 +19,7 @@ async function login(email, password) {
     }).then((response) => {
         switch(response.status) {
             case 200:
-                return { stateLogin: 99, data: response.data, errorMsg: null };
+                return { stateLogin: 1, data: response.data, errorMsg: null };
                 break;
         }
     }).catch((error) => {
@@ -28,14 +28,14 @@ async function login(email, password) {
                 if(
                     error.response.data === 'InvalidIdentification' 
                     || error.response.data === 'InvalidParameters'
-                ) return { stateLogin: 2, data: null, errorMsg: 'Email/Password errados!' };
-                return { stateLogin: 2, data: null, errorMsg: 'Erro: ' + error.response.data };
+                ) return { stateLogin: 99, data: null, errorMsg: 'Email/Password errados!' };
+                return { stateLogin: 99, data: null, errorMsg: 'Erro: ' + error.response.data };
                 break;
             case 500:
-                return { stateLogin: 3, data: null, errorMsg: 'Erro no Servidor! Detalhes: ' + error.response.data };
+                return { stateLogin: 99, data: null, errorMsg: 'Erro no Servidor! Detalhes: ' + error.response.data };
                 break;
             default:
-                return { stateLogin: 4, data: null, errorMsg: 'Erro Interno! Detalhes: ' + error.response.data };
+                return { stateLogin: 99, data: null, errorMsg: 'Erro Interno! Detalhes: ' + error.response.data };
         }
     });
 }
@@ -59,21 +59,21 @@ async function registar(username, email, password) {
     }).then((response) => {
         switch(response.status) {
             case 201:
-                return { stateLogin: 99, data: response.data, errorMsg: null };
+                return { stateLogin: 1, data: response.data, errorMsg: null };
                 break;
         }
     }).catch((error) => {
         switch(error.status) {
             case 406:
-                if(error.response.data === 'InvalidParameters') return { stateLogin: 2, data: null, errorMsg: 'Nome/Email/Password errados!' };
-                if(error.response.data.Message === 'Email already registered') return { stateLogin: 2, data: null, errorMsg: 'O Email inserido já foi usado!' };
-                return { stateLogin: 2, data: null, errorMsg: 'Erro: ' + error.response.data.Message };
+                if(error.response.data === 'InvalidParameters') return { stateLogin: 99, data: null, errorMsg: 'Nome/Email/Password errados!' };
+                if(error.response.data.Message === 'Email already registered') return { stateLogin: 99, data: null, errorMsg: 'O email inserido já foi usado!' };
+                return { stateLogin: 99, data: null, errorMsg: 'Erro: ' + error.response.data.Message };
                 break;
             case 500:
-                return { stateLogin: 3, data: null, errorMsg: 'Erro no Servidor! Detalhes: ' + error.response.data };
+                return { stateLogin: 99, data: null, errorMsg: 'Erro no Servidor! Detalhes: ' + error.response.data };
                 break;
             default:
-                return { stateLogin: 4, data: null, errorMsg: 'Erro Interno! Detalhes: ' + error.response.data };
+                return { stateLogin: 99, data: null, errorMsg: 'Erro Interno! Detalhes: ' + error.response.data };
         }
     });
 }
@@ -95,21 +95,20 @@ async function alterarPassword(userId, newPassword) {
     }).then((response) => {
         switch(response.status) {
             case 202:
-                return { stateLogin: 99, data: null, errorMsg: null };
+                return { stateLogin: 1, data: null, errorMsg: null };
                 break;
         }
     }).catch((error) => {
-        console.log(error)
         switch(error.status) {
             case 406:
-                if(error.response.data === 'InvalidParameters') return { stateLogin: 2, data: null, errorMsg: 'UserId/Password inexistente!' };
-                return { stateLogin: 2, data: null, errorMsg: 'Erro: ' + error.response.data };
+                if(error.response.data === 'InvalidParameters') return { stateLogin: 99, data: null, errorMsg: 'UserId/Password inexistente!' };
+                return { stateLogin: 99, data: null, errorMsg: 'Erro: ' + error.response.data };
                 break;
             case 500:
-                return { stateLogin: 3, data: null, errorMsg: 'Erro no Servidor! Detalhes: ' + error.response.data };
+                return { stateLogin: 99, data: null, errorMsg: 'Erro no Servidor! Detalhes: ' + error.response.data };
                 break;
             default:
-                return { stateLogin: 4, data: null, errorMsg: 'Erro Interno! Detalhes: ' + error.response.data };
+                return { stateLogin: 99, data: null, errorMsg: 'Erro Interno! Detalhes: ' + error.response.data };
         }
     });
 }
@@ -128,21 +127,122 @@ async function eliminarConta(userId) {
     }).then((response) => {
         switch(response.status) {
             case 202:
-                return { stateLogin: 99, data: null, errorMsg: null };
+                return { stateRequest: 1, data: null, errorMsg: null };
                 break;
         }
     }).catch((error) => {
-        console.log(error)
         switch(error.status) {
             case 406:
-                if(error.response.data === 'InvalidParameters') return { stateLogin: 2, data: null, errorMsg: 'UserId inexistente!' };
-                return { stateLogin: 2, data: null, errorMsg: 'Erro: ' + error.response.data };
+                if(error.response.data === 'InvalidParameters') return { stateRequest: 99, data: null, errorMsg: 'UserId inexistente!' };
+                return { stateRequest: 99, data: null, errorMsg: 'Erro: ' + error.response.data };
                 break;
             case 500:
-                return { stateLogin: 3, data: null, errorMsg: 'Erro no Servidor! Detalhes: ' + error.response.data };
+                return { stateRequest: 99, data: null, errorMsg: 'Erro no Servidor! Detalhes: ' + error.response.data.Message };
                 break;
             default:
-                return { stateLogin: 4, data: null, errorMsg: 'Erro Interno! Detalhes: ' + error.response.data };
+                return { stateRequest: 99, data: null, errorMsg: 'Erro Interno! Detalhes: ' + error.response.data.Message };
+        }
+    });
+}
+
+async function obterGames() {
+    return await axios({
+        method: 'get',
+        url: 'https://services.inapa.com/opo/api/game/',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        auth: {
+            username: process.env.OPO_API_USERNAME,
+            password: process.env.OPO_API_PASSWORD
+        }
+    }).then((response) => {
+        switch(response.status) {
+            case 200:
+                return { stateRequest: 1, data: response.data.Clients, errorMsg: null };
+                break;
+        }
+    }).catch((error) => {
+        switch(error.status) {
+            case 500:
+                return { stateRequest: 99, data: null, errorMsg: 'Erro no Servidor! Detalhes: ' + error.response.data };
+                break;
+            default:
+                return { stateRequest: 99, data: null, errorMsg: 'Erro! Detalhes: ' + error.response.data };
+        }
+    });
+}
+
+async function comprarBilhete(idGame, idClient) {
+    let numTickets = await obterNumTickets(idGame);
+    if(numTickets === -1) return { stateRequest: 99, data: null, errorMsg: 'Erro ao gerar o lugar!' };
+
+    return await axios({
+        method: 'post',
+        url: 'https://services.inapa.com/opo/api/ticket',
+        data: {
+            clientId: idClient,
+            gameId: idGame,
+            seat: numTickets + 1,
+        },
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        auth: {
+            username: process.env.OPO_API_USERNAME,
+            password: process.env.OPO_API_PASSWORD
+        }
+    }).then((response) => {
+        switch(response.status) {
+            case 201:
+                return { stateRequest: 1, data: response.data, errorMsg: null };
+                break;
+        }
+    }).catch((error) => {
+        switch(error.status) {
+            case 406:
+                //-> Pode ser: falta de parametros, seat já ocupado, utilizador ou game inexistente, bilhete já comprado para o utilizador
+                if(error.response.data.Message === 'Client Id or Product Id does not exist') return { stateRequest: 99, data: null, errorMsg: 'Erro ao comprar o bilhete!' };
+                return { stateRequest: 99, data: null, errorMsg: 'Erro: ' + error.response.data.Message };
+                break;
+            case 500:
+                return { stateRequest: 99, data: null, errorMsg: 'Erro no Servidor! Detalhes: ' + error.response.data };
+                break;
+            default:
+                return { stateRequest: 99, data: null, errorMsg: 'Erro Interno! Detalhes: ' + error.response.data };
+        }
+    });
+}
+
+async function obterNumTickets(idGame) {
+    return await axios({
+        method: 'get',
+        url: 'https://services.inapa.com/opo/api/ticket/game/' + idGame,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        auth: {
+            username: process.env.OPO_API_USERNAME,
+            password: process.env.OPO_API_PASSWORD
+        }
+    }).then((response) => {
+        switch(response.status) {
+            case 201:
+                return response.data.TicketInfo.length;
+                break;
+        }
+    }).catch((error) => {
+        switch(error.status) {
+            case 406:
+                if(error.response.data === 'InvalidIdentification') return 0;
+                if(error.response.data === 'InvalidParameters') return -1;
+                return -1;
+                break;
+            case 500:
+                return -1;
+                break;
+            default:
+                return -1;
         }
     });
 }
@@ -151,5 +251,7 @@ module.exports = {
     login,
     registar,
     alterarPassword,
-    eliminarConta
+    eliminarConta,
+    obterGames,
+    comprarBilhete
 };

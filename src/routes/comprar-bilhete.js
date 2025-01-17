@@ -1,12 +1,14 @@
 const router = require('express').Router();
-const { eliminarConta } = require('../functions/opo.js');
+const { comprarBilhete } = require('../functions/opo.js');
 
-router.get('/', async (req, res) => {
-    let result = await eliminarConta(req.session.passport.user.id);
+router.get('/:idGame', async (req, res) => {
+    let idGame = req.params.idGame;
 
+    let result = await comprarBilhete(idGame, req.session.passport.user.id, 1);
     switch(result.stateRequest) {
         case 1:
-            res.redirect('/logout');
+            req.session.stateLogin = 0;
+            res.redirect('/');
             break;
         case 99:
             req.session.stateLogin = 2;

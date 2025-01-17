@@ -1,6 +1,7 @@
 const router = require('express').Router();
+const { obterGames } = require('../functions/opo.js');
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
     let stateLogin = req.session.stateLogin;
     let errorMsg = req.session.errorMsg;
     delete req.session.stateLogin;
@@ -13,15 +14,12 @@ router.get('/', (req, res) => {
     //-> req.session.passport.user.email
     //-> req.session.passport.user.active
 
-    if(stateLogin === 1) return res.render('home.ejs', { alert: true, type: 'success', message: 'Palavra-passe alterada!' });
-    if(stateLogin === 10) return res.redirect('/logout');
-    if(stateLogin === 2) return res.render('home.ejs', { alert: true, type: 'error', message: errorMsg });
-    if(stateLogin === 3) return res.render('home.ejs', { alert: true, type: 'error', message: errorMsg });
-    if(stateLogin === 4) return res.render('home.ejs', { alert: true, type: 'error', message: errorMsg });
+    let result = await obterGames();
+    if(stateLogin === 0) return res.render('home.ejs', { alert: true, type: 'success', message: 'Bilhete comprado!', games: result });
+    if(stateLogin === 1) return res.render('home.ejs', { alert: true, type: 'success', message: 'Palavra-passe alterada!', games: result });
+    if(stateLogin === 2) return res.render('home.ejs', { alert: true, type: 'error', message: errorMsg, games: result });
 
-
-
-    res.render('home.ejs', { alert: false });
+    res.render('home.ejs', { alert: false, games: result });
 });
 
 module.exports = router;
