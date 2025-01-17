@@ -29,7 +29,8 @@
                 </div>
             <% } %>
             <div id="content" class="content m-4">
-                Hello World!
+                
+                <h1 class="text-center text-3xl font-bold p-4"><span class="underline underline-offset-4">Jogos Disponíveis</span>:</h1>
 
                 <% if(games.stateRequest === 99) { %>
                     <p class="m-auto text-center font-bold py-4">Ocorreu um erro ao carregar os jogos!</p>
@@ -62,9 +63,7 @@
                     <% } %>
                 <% } %>
 
-                <hr>
-                <hr>
-                <hr>
+                <h1 class="text-center text-3xl font-bold pt-4"><span class="underline underline-offset-4">Tickets Comprados</span>:</h1>
 
                 <% if(tickets.stateRequest === 99) { %>
                     <p class="m-auto text-center font-bold py-4">Ocorreu um erro ao carregar os tickets!</p>
