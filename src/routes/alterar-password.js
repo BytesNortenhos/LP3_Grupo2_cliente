@@ -6,12 +6,12 @@ router.post('/', async (req, res) => {
     let result = await alterarPassword(req.session.passport.user.id, newPassword);
 
     switch(result.stateLogin) {
-        case 99:
+        case 1:
             req.session.stateLogin = 1;
             res.redirect('/');
             break;
-        default:
-            req.session.stateLogin = result.stateLogin;
+        case 99:
+            req.session.stateLogin = 2;
             req.session.errorMsg = result.errorMsg;
             res.redirect('/');
             break;
