@@ -10,10 +10,7 @@ router.get('/', (req, res) => {
     delete req.session.errorMsg;
 
     if(stateLogin === 1) return res.render('login.ejs', {alert: true, type: 'success', message: 'Conta criada com sucesso, por favor faça login!'});
-    if(stateLogin === 2) return res.render('login.ejs', {alert: true, type: 'error', message: errorMsg});
-    if(stateLogin === 3) return res.render('login.ejs', {alert: true, type: 'error', message: errorMsg});
-    if(stateLogin === 4) return res.render('login.ejs', {alert: true, type: 'error', message: errorMsg});
-
+    if(stateLogin === 99) return res.render('login.ejs', {alert: true, type: 'error', message: errorMsg});
     res.render('login.ejs', { alert: false });
 });
 
@@ -47,7 +44,7 @@ passport.use('local', new LocalStrategy({
     let result = await login(email, password);
 
     switch(result.stateLogin) {
-        case 99:
+        case 1:
             return done(null, {
                 id: result.data.Client[0].Id,
                 groupId: result.data.Client[0].GroupId,
@@ -56,13 +53,7 @@ passport.use('local', new LocalStrategy({
                 active: result.data.Client[0].Active,
             }, {});
             break;
-        case 2:
-            return done(null, false, { stateLogin: result.stateLogin, errorMsg: result.errorMsg });
-            break;
-        case 3:
-            return done(null, false, { stateLogin: result.stateLogin, errorMsg: result.errorMsg });
-            break;
-        case 4:
+        case 99:
             return done(null, false, { stateLogin: result.stateLogin, errorMsg: result.errorMsg });
             break;
     }
