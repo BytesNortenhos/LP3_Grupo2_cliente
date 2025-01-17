@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { obterGames } = require('../functions/opo.js');
+const { obterGames, obterTickets } = require('../functions/opo.js');
 
 router.get('/', async (req, res) => {
     let stateLogin = req.session.stateLogin;
@@ -14,12 +14,13 @@ router.get('/', async (req, res) => {
     //-> req.session.passport.user.email
     //-> req.session.passport.user.active
 
-    let result = await obterGames();
-    if(stateLogin === 0) return res.render('home.ejs', { alert: true, type: 'success', message: 'Bilhete comprado!', games: result });
-    if(stateLogin === 1) return res.render('home.ejs', { alert: true, type: 'success', message: 'Palavra-passe alterada!', games: result });
-    if(stateLogin === 2) return res.render('home.ejs', { alert: true, type: 'error', message: errorMsg, games: result });
+    let resultGames = await obterGames();
+    let resultTickets = await obterTickets(req.session.passport.user.id);
+    if(stateLogin === 0) return res.render('home.ejs', { alert: true, type: 'success', message: 'Bilhete comprado!', games: resultGames, tickets: resultTickets });
+    if(stateLogin === 1) return res.render('home.ejs', { alert: true, type: 'success', message: 'Palavra-passe alterada!', games: resultGames, tickets: resultTickets });
+    if(stateLogin === 2) return res.render('home.ejs', { alert: true, type: 'error', message: errorMsg, games: resultGames, tickets: resultTickets });
 
-    res.render('home.ejs', { alert: false, games: result });
+    res.render('home.ejs', { alert: false, games: resultGames, tickets: resultTickets });
 });
 
 module.exports = router;

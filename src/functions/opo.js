@@ -134,6 +134,7 @@ async function eliminarConta(userId) {
         switch(error.status) {
             case 406:
                 if(error.response.data === 'InvalidParameters') return { stateRequest: 99, data: null, errorMsg: 'UserId inexistente!' };
+                if(error.response.data.Message === 'Client cannot be deleted') return { stateRequest: 99, data: null, errorMsg: 'Não pode eliminar esta conta!' };
                 return { stateRequest: 99, data: null, errorMsg: 'Erro: ' + error.response.data };
                 break;
             case 500:
@@ -141,6 +142,39 @@ async function eliminarConta(userId) {
                 break;
             default:
                 return { stateRequest: 99, data: null, errorMsg: 'Erro Interno! Detalhes: ' + error.response.data.Message };
+        }
+    });
+}
+
+async function obterTickets(userId) {
+    return await axios({
+        method: 'get',
+        url: 'https://services.inapa.com/opo/api/ticket/client/' + userId,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        auth: {
+            username: process.env.OPO_API_USERNAME,
+            password: process.env.OPO_API_PASSWORD
+        }
+    }).then((response) => {
+        switch(response.status) {
+            case 200:
+                return { stateRequest: 1, data: response.data.TicketInfo, errorMsg: null };
+                break;
+        }
+    }).catch((error) => {
+        switch(error.status) {
+            case 406:
+                if(error.response.data === 'InvalidIdentification') return { stateRequest: 1, data: [], errorMsg: null };
+                if(error.response.data === 'InvalidParameters') return { stateRequest: 99, data: null, errorMsg: 'Erro ao obter os tickets!' };
+                return { stateRequest: 99, data: null, errorMsg: 'Erro ao obter os tickets! Detalhes: ' + error.response.data };
+                break;
+            case 500:
+                return { stateRequest: 99, data: null, errorMsg: 'Erro no Servidor! Detalhes: ' + error.response.data };
+                break;
+            default:
+                return { stateRequest: 99, data: null, errorMsg: 'Erro! Detalhes: ' + error.response.data };
         }
     });
 }
@@ -164,6 +198,11 @@ async function obterGames() {
         }
     }).catch((error) => {
         switch(error.status) {
+            case 406:
+                if(error.response.data === 'InvalidIdentification') return { stateRequest: 1, data: [], errorMsg: null };
+                if(error.response.data === 'InvalidParameters') return { stateRequest: 99, data: null, errorMsg: 'Erro ao obter os jogos!' };
+                return { stateRequest: 99, data: null, errorMsg: 'Erro ao obter os jogos! Detalhes: ' + error.response.data };
+                break;
             case 500:
                 return { stateRequest: 99, data: null, errorMsg: 'Erro no Servidor! Detalhes: ' + error.response.data };
                 break;
@@ -252,6 +291,7 @@ module.exports = {
     registar,
     alterarPassword,
     eliminarConta,
+    obterTickets,
     obterGames,
     comprarBilhete
 };
