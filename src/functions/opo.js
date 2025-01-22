@@ -193,7 +193,7 @@ async function obterGames() {
     }).then((response) => {
         switch(response.status) {
             case 200:
-                return { stateRequest: 1, data: response.data.Clients, errorMsg: null };
+                return { stateRequest: 1, data: response.data.Games, errorMsg: null };
                 break;
         }
     }).catch((error) => {
